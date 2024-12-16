@@ -3,23 +3,16 @@
 
 namespace App\Query\GetQuery;
 
-use App\Query\GetQuery\FetchAssocQuery;
+use App\Query\GetQuery\Query;
 
 
-class Users
+class Users extends Query
 {
-
-    private $fetchAssoc;
-
-    public function __construct(FetchAssocQuery $fetchAssoc)
-    {
-        $this->fetchAssoc = $fetchAssoc;
-    }
 
     public function getUsersById($id){
         $sql = 'SELECT * FROM users.Users WHERE id = :id';
         $execute = ['id' => $id];
-        return $this->fetchAssoc->fetch($sql, $execute, 'Пользовател не найден');
+        return $this->fetch($sql, $execute, 'Пользовател не найден');
     }
 
 

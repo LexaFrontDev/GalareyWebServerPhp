@@ -13,5 +13,8 @@
     ],
     "require": {
         "firebase/php-jwt": "^6.10"
+    },
+    "scripts": {
+        "clear-container": "php src/Bin/Console/ClearContainer.php"
     }
 }

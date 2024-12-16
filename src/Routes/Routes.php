@@ -4,6 +4,8 @@ namespace App\Routes;
 
 use App\Controller\AuthControllerDirectory\LoginController;
 use App\Controller\AuthControllerDirectory\RegisterController;
+use App\Controller\ImagesController\UploadImagesController;
+use App\Controller\Index\IndexController;
 use App\Controller\RefTokenController\UpdateAccToken;
 use App\Service\WorkWithJson\JsonResponse;
 
@@ -28,6 +30,18 @@ class Routes
         if ($url === '/acc' && $method === 'PUT') {
             $updateAccTokenController = $container->get(UpdateAccToken::class);
             $updateAccTokenController->updateTokenController();
+            return;
+        }
+
+        if($url === '/index' && $method === 'GET'){
+            $getIndex = $container->get(IndexController::class);
+            $getIndex->getIndex();
+            return;
+        }
+
+        if($url === '/images' && $method === 'POST'){
+            $uploadImages = $container->get(UploadImagesController::class);
+            $uploadImages->uploads();
             return;
         }
 

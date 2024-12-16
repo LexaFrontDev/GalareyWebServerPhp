@@ -2,8 +2,9 @@
 namespace App\Validator;
 
 use App\Model\DatabaseConfig\DatabaseConnect;
+use App\Query\GetQuery\Query;
 
-class RegisterValidator
+class RegisterValidator extends Query
 {
 
     public function validator($name,  $password){
@@ -27,16 +28,10 @@ class RegisterValidator
             throw new \Exception('Пароль должен содержать хотя бы одну заглавную букву, одну цифру и один специальный символ');
         }
 
-        $db = new DatabaseConnect();
-        $pdo  = $db->getConnection();
-        $sql = 'SELECT * FROM users.Users WHERE name = :name';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['name' => $name]);
-        $user = $stmt->fetch();
 
-        if($user){
-            throw new \Exception('Пользователь с таким именем уже существует');
-        }
+        $sql = 'SELECT * FROM users.Users WHERE name = :name';
+        $execute = ['name' => $name];
+        $user = $this->fetchCheck($sql, $execute, 'Пользователь с таким именем уже существует');
 
         return ['name' => $name, 'password' => $password];
     }

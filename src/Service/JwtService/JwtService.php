@@ -8,7 +8,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 
-class JwtService
+abstract class JwtService
 {
 
 

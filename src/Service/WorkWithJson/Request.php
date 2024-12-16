@@ -14,11 +14,6 @@ class Request
         $rawData = file_get_contents('php://input');
         $data = json_decode($rawData, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid JSON format']);
-            exit;
-        }
 
         $headers = getallheaders();
         $token = null;

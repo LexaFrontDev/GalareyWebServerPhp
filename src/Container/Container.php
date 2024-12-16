@@ -50,6 +50,10 @@ class Container
 
     public function register(string $class)
     {
+        if (!class_exists($class) || (new ReflectionClass($class))->isAbstract()) {
+            return;
+        }
+
         if (!isset($this->services[$class])) {
             $this->services[$class] = $this->create($class);
         }
@@ -85,5 +89,11 @@ class Container
         }
 
         return $this->services[$class];
+    }
+
+
+    public function clear()
+    {
+        $this->services = [];
     }
 }
