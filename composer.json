@@ -11,5 +11,7 @@
             "email": "156980843+LexaFrontDev@users.noreply.github.com"
         }
     ],
-    "require": {}
+    "require": {
+        "firebase/php-jwt": "^6.10"
+    }
 }

@@ -20,10 +20,24 @@ class Request
             exit;
         }
 
+        $headers = getallheaders();
+        $token = null;
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+            $arr = explode(' ', $authHeader);
+
+            if (count($arr) === 2 && $arr[0] === 'Bearer') {
+                $token = $arr[1];
+            }
+        }
+
         return [
             'url' => $uri,
             'method' => $method,
-            'data' => $data
+            'data' => $data,
+            'headers' => $headers,
+            'token' => $token
         ];
     }
 }
+
