@@ -3,24 +3,20 @@
 
 namespace App\Command\InsertCommand;
 
-use App\Model\DatabaseConfig\DatabaseConnect;
+use App\Command\InsertCommand\InsertCommands;
 
-
-class InsertUsersCommand
+class InsertUsersCommand extends InsertCommands
 {
 
-    public function create($name, $password)
+    public function insert($name, $password)
     {
-        $db = new DatabaseConnect();
-        $pdo = $db->getConnection();
         $sql = 'INSERT INTO users.Users (name, hshpassword) VALUES  (:name, :password)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
+        $execute = [
             'name' => $name,
             'password' => $password
-        ]);
+        ];
 
-        return true;
+        return $this->inserts($sql, $execute);;
     }
 
 

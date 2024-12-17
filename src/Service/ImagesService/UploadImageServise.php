@@ -1,42 +1,60 @@
 <?php
 
 
-namespace App\Service\ImageService;
+namespace App\Service\ImagesService;
 
+use App\Command\CurlCommand\CurlCommand;
+use App\Service\WorkWithJson\Request;
+use App\Service\JwtService\JwtService;
+use App\Command\InsertCommand\InsertImagesCommand;
 
-class UploadImageServise
+class UploadImageServise extends JwtService
 {
-    public function upload($file, $nameFile)
+    private $curlCommand;
+    private $request;
+    private $insertImagesCommand;
+
+    public function __construct(InsertImagesCommand $insertImagesCommand,Request $request, CurlCommand $curlCommand)
     {
+        $this->insertImagesCommand = $insertImagesCommand;
+        $this->request = $request;
+        $this->curlCommand = $curlCommand;
+    }
+
+    public function upload($file)
+    {
+        $request = $this->request->getRequest();
+        $accToken = $request['token'];
+
+
+        $decoded = $this->accDecode($accToken, true);
+
+
         $client_id = '8b1f3fa9e6c2318cc12aa0d6206a9170a28bf934';
         $url = 'https://api.imgur.com/3/image';
-        $cfile = new \CURLFile($file, mime_content_type($file), $nameFile);
 
         $postData = [
-            'image' => $cfile
+            'image' => $file
         ];
 
         $headers = [
+            "Accept: application/json'",
             "Authorization: Bearer $client_id"
         ];
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $curl = $this->curlCommand->curlPost($url, $postData, $headers);
 
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            return ['error' => $error];
+        if(!$curl){
+            throw new \Exception('Не получилось сохранить изображение в storage');
         }
 
+        if($decoded){
+            $data = $decoded['data'];
+            $id_users = $data['id'];
+            $link = $curl['data']['link'];
+            $this->insertImagesCommand->insertImages($link, $id_users);
+        }
 
-        curl_close($ch);
-        return $response;
+        return ['messages' => 'Изображение успешно отправленно', 'curl' => $curl];
     }
 }

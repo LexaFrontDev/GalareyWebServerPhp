@@ -3,21 +3,19 @@
 
 namespace App\Command\InsertCommand;
 
-use App\Model\DatabaseConfig\DatabaseConnect;
 
-class InsertRefToken
+use App\Command\InsertCommand\InsertCommands;
+
+class InsertRefToken extends InsertCommands
 {
 
     public function insertRefToken($jwt_refresh, $name){
-        $db = new DatabaseConnect();
-        $pdo = $db->getConnection();
         $sql = 'INSERT INTO users.refresh_tokens (username, refresh_token) VALUES  (:refresh_token, :username)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
+        $execute = [
             'refresh_token' => $jwt_refresh,
             'username' => $name
-        ]);
-        return true;
+        ];
+        $this->inserts($sql, $execute);
     }
 
 }

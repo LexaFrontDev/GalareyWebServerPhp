@@ -11,6 +11,14 @@ class Container
 {
     private $services = [];
 
+
+    public function registerInstance(string $class, $instance)
+    {
+        if (!isset($this->services[$class])) {
+            $this->services[$class] = $instance;
+        }
+    }
+
     public function registerClassesInDirectory(string $directory)
     {
         $iterator = new RecursiveIteratorIterator(

@@ -38,16 +38,25 @@ abstract class JwtService
     }
 
     public function accDecode($accToken, $usePublicKey = false, $algorithm = 'RS256'){
-        $key = $usePublicKey ? $this->fetchPublicPem() : $this->fetchPrivatePem();
-        $decoded = JWT::decode($accToken, new Key($key, $algorithm));
-        $payload = (array)$decoded;
-        $data = isset($payload['data']) ? (array)$payload['data'] : null;
+        try{
+            $key = $usePublicKey ? $this->fetchPublicPem() : $this->fetchPrivatePem();
+            $decoded = JWT::decode($accToken, new Key($key, $algorithm));
+            $payload = (array)$decoded;
+            $data = isset($payload['data']) ? (array)$payload['data'] : null;
 
-        if ($data) {
-            return ['payload' => $payload, 'data' => $data, 'username' => $data['username'] ?? null];
-        } else {
-            throw new \Exception('Данные отсутствуют в декодированном токене');
+            if ($data) {
+                return ['payload' => $payload, 'data' => $data, 'username' => $data['username'] ?? null];
+            } else {
+                throw new \Exception('Данные отсутствуют в декодированном токене');
+            }
+        }catch (\Firebase\JWT\ExpiredException $e) {
+            throw new \Exception('Токен истек');
+        } catch (\Firebase\JWT\BeforeValidException $e) {
+            throw new \Exception('Токен не валиден до указанного времени');
+        } catch (\Exception $e) {
+            throw new \Exception('Ошибка декодирования токена');
         }
+
     }
 
 }

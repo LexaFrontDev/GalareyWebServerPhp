@@ -9,9 +9,15 @@ use App\Model\DatabaseConfig\DatabaseConnect;
 abstract class Query
 {
 
+    private $db;
+
+    public function __construct(DatabaseConnect $db)
+    {
+        $this->db = $db;
+    }
+
     public function fetch(string $sql, array $execute, string $notFind){
-        $db = new DatabaseConnect();
-        $pdo = $db->getConnection();
+        $pdo = $this->db->getConnection();
         $sql = $sql;
         $stmt = $pdo->prepare($sql);
         $stmt->execute($execute);
@@ -25,8 +31,7 @@ abstract class Query
     }
 
     public function fetchCheck(string $sql, array $execute, string $notFind){
-        $db = new DatabaseConnect();
-        $pdo = $db->getConnection();
+        $pdo = $this->db->getConnection();
         $sql = $sql;
         $stmt = $pdo->prepare($sql);
         $stmt->execute($execute);

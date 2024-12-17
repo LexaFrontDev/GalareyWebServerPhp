@@ -31,7 +31,7 @@ class RefGenerateTokenService extends JwtService
             throw new \Exception('Имя не может быть пустыми');
         }
 
-        $users = $this->getUsers->getUsers($name);
+        $users = $this->getUsers->getUsersByName($name);
 
         if(!$users){
             throw new \Exception('Пользовател не найдень');

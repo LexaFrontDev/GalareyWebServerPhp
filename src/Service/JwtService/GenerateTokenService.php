@@ -23,7 +23,7 @@ class GenerateTokenService extends JwtService
 
 
     public function generateAccToken($name){
-        $user = $this->getUsers->getUsers($name);
+        $user = $this->getUsers->getUsersByName($name);
         $issuedat_claim = time();
         $access = $issuedat_claim + 900;
 

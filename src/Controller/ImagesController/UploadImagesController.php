@@ -3,30 +3,42 @@
 namespace App\Controller\ImagesController;
 
 use App\Service\WorkWithJson\JsonResponse;
-use App\Service\ImageService\UploadImageServise;
+use App\Service\ImagesService\UploadImageServise;
+use App\Service\Roles\RouteRoles;
 
 class UploadImagesController
 {
 
     private $jsonResponse;
-    private $imageServise;
+    private $uploadImagesService;
+    private $routeRoles;
 
-    public function __construct(UploadImageServise $imageServise, JsonResponse $jsonResponse)
+    public function __construct(RouteRoles $routeRoles,UploadImageServise $uploadImagesService, JsonResponse $jsonResponse)
     {
-        $this->imageServise = $imageServise;
+        $this->routeRoles = $routeRoles;
+        $this->uploadImagesService = $uploadImagesService;
         $this->jsonResponse = $jsonResponse;
     }
 
     public function uploads(){
-        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK){
-            $tempPath = $_FILES['file']['tmp_name'];
-            $originalName = $_FILES['file']['name'];
-            $fileContents = file_get_contents($tempPath);
 
-            $uploadFile = $this->imageServise->upload($fileContents, $originalName);
-            return $this->jsonResponse->sendResponse($uploadFile,201);
+        try{
+            $checkRoles = $this->routeRoles->onlyUsers();
+
+            if($checkRoles){
+                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK){
+                    $tempPath = $_FILES['image']['tmp_name'];
+                    $fileContents = file_get_contents($tempPath);
+
+                    $uploadFile = $this->uploadImagesService->upload($fileContents);
+                    return $this->jsonResponse->sendResponse($uploadFile,201);
+                }
+                return $this->jsonResponse->sendError('Не удалось отправить файл', 404);
+            }
+        }catch (\Exception $e){
+            return $this->jsonResponse->sendError($e->getMessage(), 400);
         }
-        return $this->jsonResponse->sendError('Не удалось отправить файл', 404);
+
     }
 
 }

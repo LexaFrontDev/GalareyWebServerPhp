@@ -24,7 +24,7 @@ class LoginValidator
         }
 
 
-        $user = $this->getUsers->getUsers($name);
+        $user = $this->getUsers->getAllColumnsUsersByName($name);
 
         if (!$user) {
             throw new \Exception('Пользователь с таким именем не существует');

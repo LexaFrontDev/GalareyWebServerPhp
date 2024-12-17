@@ -28,16 +28,7 @@ class UpdateAccTokenService extends JwtService
 
         $isCheckRefToken = $this->getRefToken->getRefreshTokens($ref);
 
-
-        try {
-            $decoded = $this->accDecode($ref, false, 'HS256');
-        } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new \Exception('Токен истек');
-        } catch (\Firebase\JWT\BeforeValidException $e) {
-            throw new \Exception('Токен не валиден до указанного времени');
-        } catch (\Exception $e) {
-            throw new \Exception('Ошибка декодирования токена');
-        }
+        $decoded = $this->accDecode($ref, false, 'HS256');
 
         if ($decoded) {
             $data = $decoded['data'];

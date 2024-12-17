@@ -39,6 +39,7 @@ class RegisterController
             try{
                 $isRegister = $this->registerService->registerUser($name, $password);
 
+                var_dump($isRegister);
                 if($isRegister){
                     $acc = $this->generateAccToken->generateAccToken($name);
                     $ref = $this->generateRefToken->generateRefToken($name);

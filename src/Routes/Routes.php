@@ -11,6 +11,7 @@ use App\Service\WorkWithJson\JsonResponse;
 
 class Routes
 {
+
     public function routes($container, $url, $method)
     {
         $response = $container->get(JsonResponse::class);

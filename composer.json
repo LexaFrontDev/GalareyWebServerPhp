@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "firebase/php-jwt": "^6.10"
+        "firebase/php-jwt": "^6.10",
+        "vlucas/phpdotenv": "^5.6"
     },
     "scripts": {
         "clear-container": "php src/Bin/Console/ClearContainer.php"

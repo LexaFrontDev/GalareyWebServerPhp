@@ -7,6 +7,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use App\Service\JwtService\JwtService;
 use App\Query\GetQuery\GetUsers;
+use App\Service\WorkWithJson\JsonResponse;
 
 class RouteRoles extends JwtService
 {
@@ -14,9 +15,11 @@ class RouteRoles extends JwtService
 
     private $request;
     private $getUsers;
+    private $jsonResponse;
 
-    public function __construct(GetUsers $getUsers,Request $request)
+    public function __construct(JsonResponse $jsonResponse ,GetUsers $getUsers,Request $request)
     {
+        $this->jsonResponse = $jsonResponse;
         $this->getUsers = $getUsers;
         $this->request = $request;
     }
@@ -25,7 +28,11 @@ class RouteRoles extends JwtService
         $request = $this->request->getRequest();
         $accToken = $request['token'];
 
-        $decode = $this->accDecode($accToken);
+        if(!$accToken){
+            throw new \Exception('Пользовател не авторизован');
+        }
+
+        $decode = $this->accDecode($accToken, true);
         $payload = $decode['payload'];
         $data = $decode['data'];
 
@@ -36,9 +43,8 @@ class RouteRoles extends JwtService
             throw new \Exception('Некорректный payload токена');
         }
 
-        $user = $this->getUsers->getUsers($data['username']);
-
-        if($user['roles'] === ['ROLE_USERS']){
+        $roles = json_decode($data['roles'], true);
+        if (in_array('ROLE_USER', $roles)) {
             return true;
         }
 
@@ -49,6 +55,10 @@ class RouteRoles extends JwtService
         $request = $this->request->getRequest();
         $accToken = $request['token'];
 
+        if(!$accToken){
+            throw new \Exception('Пользовател не авторизован');
+        }
+
         $decode = $this->accDecode($accToken);
         $payload = $decode['payload'];
         $data = $decode['data'];
@@ -60,9 +70,10 @@ class RouteRoles extends JwtService
             throw new \Exception('Некорректный payload токена');
         }
 
-        $user = $this->getUsers->getUsers($data['username']);
+        $user = $this->getUsers->getUsersByName($data['username']);
 
-        if($user['roles'] === ['ROLE_ADMIN']){
+        $roles = json_decode($user['roles'], true);
+        if (in_array('ROLE_ADMIN', $roles)) {
             return true;
         }
 

@@ -28,7 +28,7 @@ class RegisterUser
             throw new \Exception('Парол не хэширован');
         }
 
-        $isCreated = $this->createUsers->create($name, $hashPassword);
+        $isCreated = $this->createUsers->insert($name, $hashPassword);
 
         if(!$isCreated){
             throw new \Exception('Не удалось зарегестрировать пользователя');
