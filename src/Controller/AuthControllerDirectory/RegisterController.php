@@ -20,8 +20,7 @@ class RegisterController
     private $generateAccToken;
     private $generateRefToken;
 
-    public function __construct(GenerateTokenService $generateAccToken, RefGenerateTokenService $generateRefToken, RegisterUser $registerService, JsonResponse $response, Request $request)
-    {
+    public function __construct(GenerateTokenService $generateAccToken, RefGenerateTokenService $generateRefToken, RegisterUser $registerService, JsonResponse $response, Request $request){
         $this->generateRefToken = $generateRefToken;
         $this->generateAccToken = $generateAccToken;
         $this->registerService = $registerService;
@@ -46,9 +45,11 @@ class RegisterController
                     $header = ['Acc' => $acc['acc'], 'Ref' => $ref['ref']];
                     return $this->response->sendResponse($isRegister['messages'], 201, $header);
                 }
-
                 return $this->response->sendError('Не удалось зарегестрировать пользователя', 400);
-            }catch (\Exception $e){
+            }catch (\PDOException $e) {
+                if ($e->getCode() == '23505') {
+                    return $this->response->sendError('Пользователь с таким именем уже существует', 400);
+                }
                 return $this->response->sendError($e->getMessage(), 400);
             }
     }

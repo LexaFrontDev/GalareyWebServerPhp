@@ -7,12 +7,10 @@ namespace App\Command\InsertCommand;
 
 use App\Model\DatabaseConfig\DatabaseConnect;
 
-abstract class InsertCommands
-{
-    private $db;
+abstract class InsertCommands{
+    protected $db;
 
-    public function __construct(DatabaseConnect $db)
-    {
+    public function __construct(DatabaseConnect $db){
         $this->db = $db;
     }
 
@@ -20,7 +18,7 @@ abstract class InsertCommands
         $pdo = $this->db->getConnection();
         $stmt = $pdo->prepare($sql);
         $stmt->execute($execute);
-        return true;
+        return $pdo->lastInsertId();
     }
 
 }

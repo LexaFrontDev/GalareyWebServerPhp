@@ -38,7 +38,7 @@ abstract class Query
         $fetch = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($fetch) {
-            throw new \Exception( "$notFind");
+            throw new \Exception( $notFind);
         }
 
         return true;

@@ -11,8 +11,7 @@ class RegisterUser
     private $registerValidator;
     private $createUsers;
 
-    public function __construct(InsertUsersCommand $createUsers, RegisterValidator $registerValidator)
-    {
+    public function __construct(InsertUsersCommand $createUsers, RegisterValidator $registerValidator){
         $this->createUsers = $createUsers;
         $this->registerValidator = $registerValidator;
     }
@@ -34,7 +33,7 @@ class RegisterUser
             throw new \Exception('Не удалось зарегестрировать пользователя');
         }
 
-        return ['messages' => 'Пользовател успешно зарегестрировалься', 201];
+        return ['messages' => 'Пользовател успешно зарегестрировалься'];
     }
 
 }

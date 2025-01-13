@@ -21,12 +21,9 @@ class UploadImageServise extends JwtService
         $this->curlCommand = $curlCommand;
     }
 
-    public function upload($file)
-    {
+    public function upload($file, $data){
         $request = $this->request->getRequest();
         $accToken = $request['token'];
-
-
         $decoded = $this->accDecode($accToken, true);
 
 
@@ -52,7 +49,7 @@ class UploadImageServise extends JwtService
             $data = $decoded['data'];
             $id_users = $data['id'];
             $link = $curl['data']['link'];
-            $this->insertImagesCommand->insertImages($link, $id_users);
+            $this->insertImagesCommand->insertImages($link, $id_users, $data['title'], $data['description']);
         }
 
         return ['messages' => 'Изображение успешно отправленно', 'curl' => $curl];
